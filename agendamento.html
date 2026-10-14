@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pinheiro Barbershop</title>
+    
+    <!-- Carregando Tailwind CSS para o Design Moderno -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Carregando FontAwesome para os ícones (Google, WhatsApp, etc) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Fonte Inter do Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #09090b; /* zinc-950 */
+            color: #f4f4f5; /* zinc-100 */
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Cores Personalizadas */
+        .text-gold { color: #d4af37; }
+        .bg-gold { background-color: #d4af37; }
+        .border-gold { border-color: #d4af37; }
+        .hover-gold:hover { background-color: #d4af37; color: #09090b; }
+
+        /* Animações suaves */
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out forwards;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Acordeão transição suave */
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .category-card.active .accordion-content {
+            max-height: 1000px; /* Valor alto para garantir que cabe tudo */
+            transition: max-height 0.5s ease-in;
+        }
+
+        .icon-rotate {
+            transition: transform 0.3s ease;
+        }
+        
+        .category-card.active .icon-rotate {
+            transform: rotate(180deg);
+        }
+
+        /* Classe auxiliar para esconder scrollbar no calendário horizontal */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Esconder barra de rolagem mas manter funcionalidade */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #18181b; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3f3f46; 
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen relative pb-10">
+
+    <!-- ========================================== -->
+    <!-- TELA 1: MENU PRINCIPAL (ESTILO LINKTREE) -->
+    <!-- ========================================== -->
+    <div id="screen-linktree" class="max-w-md mx-auto px-6 pt-16 fade-in">
+        
+        <!-- Perfil / Logo -->
+        <div class="flex flex-col items-center mb-10">
+            <div class="w-28 h-28 rounded-full bg-zinc-900 border-2 border-gold flex items-center justify-center shadow-[0_0_15px_rgba(212,175,55,0.2)] mb-4">
+                <span class="text-4xl font-bold text-gold tracking-wider">PB</span>
+            </div>
+            <h1 class="text-xl font-semibold tracking-wide">@pinheiro_barbershop_</h1>
+        </div>
+
+        <!-- Botões de Ação -->
+        <div class="flex flex-col gap-4">
+            
+            <!-- 1. Agendamento Online (Movido para o topo) -->
+            <button onclick="switchScreen('screen-booking')" class="flex items-center bg-zinc-900 p-4 rounded-2xl border border-gold hover:bg-gold hover:text-zinc-950 transition-all w-full group text-left shadow-[0_4px_20px_rgba(212,175,55,0.15)] relative overflow-hidden">
+                <div class="w-12 h-12 rounded-full bg-gold/20 flex items-center justify-center text-gold group-hover:text-zinc-950 group-hover:bg-zinc-950/20 transition-colors shrink-0">
+                    <i class="fas fa-calendar-check text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <h2 class="font-bold text-lg">Agende online</h2>
+                    <p class="text-xs opacity-80 mt-0.5 font-medium">Cortes, barbas e combos</p>
+                </div>
+                <div class="absolute right-4 text-gold group-hover:text-zinc-950">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </button>
+
+            <!-- 2. Localização -->
+            <button class="flex items-center bg-zinc-900 p-4 rounded-2xl border border-zinc-800 hover:border-gold transition-colors w-full group text-left">
+                <div class="w-12 h-12 rounded-full bg-zinc-800 flex items-center justify-center text-zinc-300 group-hover:text-gold transition-colors shrink-0">
+                    <i class="fas fa-map-marker-alt text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <h2 class="font-semibold text-zinc-100">Nossa localização</h2>
+                    <p class="text-xs text-zinc-400 mt-1">R. José Valeriano Costa, 50 -...</p>
+                </div>
+            </button>
+
+            <!-- 3. Avaliação Google -->
+            <button class="flex items-center bg-zinc-900 p-4 rounded-2xl border border-zinc-800 hover:border-blue-500 transition-colors w-full group text-left">
+                <div class="w-12 h-12 rounded-full bg-zinc-800 flex items-center justify-center text-zinc-300 group-hover:text-blue-500 transition-colors shrink-0">
+                    <i class="fab fa-google text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <h2 class="font-semibold text-zinc-100">Faça sua avaliação</h2>
+                    <p class="text-xs text-zinc-400 mt-1">Ajude-nos com 5 estrelas</p>
+                </div>
+            </button>
+
+            <!-- 4. WhatsApp -->
+            <button class="flex items-center bg-zinc-900 p-4 rounded-2xl border border-zinc-800 hover:border-green-500 transition-colors w-full group text-left">
+                <div class="w-12 h-12 rounded-full bg-zinc-800 flex items-center justify-center text-zinc-300 group-hover:text-green-500 transition-colors shrink-0">
+                    <i class="fab fa-whatsapp text-2xl"></i>
+                </div>
+                <div class="ml-4">
+                    <h2 class="font-semibold text-zinc-100">Nosso Whatsapp</h2>
+                    <p class="text-xs text-zinc-400 mt-1">Tire dúvidas rapidamente</p>
+                </div>
+            </button>
+
+            <!-- 5. Sobre a Barbearia -->
+            <button onclick="switchScreen('screen-about')" class="flex items-center bg-zinc-900 p-4 rounded-2xl border border-zinc-800 hover:border-gold transition-colors w-full group text-left">
+                <div class="w-12 h-12 rounded-full bg-zinc-800 flex items-center justify-center text-zinc-300 group-hover:text-gold transition-colors shrink-0">
+                    <i class="fas fa-camera text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <h2 class="font-semibold text-zinc-100">Sobre a Barbearia</h2>
+                    <p class="text-xs text-zinc-400 mt-1">Conheça nosso espaço e trabalhos</p>
+                </div>
+            </button>
+
+        </div>
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- TELA 2: SISTEMA DE AGENDAMENTO (ESCONDIDO) -->
+    <!-- ========================================== -->
+    <div id="screen-booking" class="max-w-md mx-auto hidden pt-4">
+        
+        <!-- Cabeçalho Fixo -->
+        <div class="sticky top-0 bg-[#09090b]/95 backdrop-blur-md z-10 px-4 py-4 border-b border-zinc-800 flex items-center mb-6">
+            <button onclick="switchScreen('screen-linktree')" class="w-10 h-10 rounded-full bg-zinc-900 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <div class="flex-1 text-center pr-10">
+                <h1 class="font-semibold text-lg">Selecione o serviço</h1>
+                <p class="text-xs text-gold">Pinheiro Barbershop</p>
+            </div>
+        </div>
+
+        <!-- Lista de Categorias (Acordeão) -->
+        <div class="px-4 flex flex-col gap-3">
+
+            <!-- 1. Combos -->
+            <div class="category-card bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden active">
+                <button class="w-full px-5 py-4 flex items-center justify-between bg-zinc-900/50 hover:bg-zinc-800/50 transition-colors" onclick="toggleCategory(this)">
+                    <span class="font-semibold text-[15px]">Combos 🔥</span>
+                    <i class="fas fa-chevron-down text-zinc-500 icon-rotate text-sm"></i>
+                </button>
+                <div class="accordion-content bg-zinc-900">
+                    <div class="px-5 pb-2">
+                        <!-- Serviço Item -->
+                        <div class="py-3 border-t border-zinc-800 flex justify-between items-center">
+                            <div>
+                                <h3 class="font-medium text-sm">Corte + Barba</h3>
+                                <p class="text-xs text-zinc-400 mt-1"><i class="far fa-clock mr-1"></i>50min</p>
+                            </div>
+                            <button onclick="confirmarReserva('Corte + Barba', '50min')" class="px-4 py-1.5 rounded-lg border border-gold text-gold text-sm font-semibold hover-gold transition-colors">Reservar</button>
+                        </div>
+                        <div class="py-3 border-t border-zinc-800 flex justify-between items-center">
+                            <div>
+                                <h3 class="font-medium text-sm">Corte + Barboterapia</h3>
+                                <p class="text-xs text-zinc-400 mt-1"><i class="far fa-clock mr-1"></i>1h:00min</p>
+                            </div>
+                            <button onclick="confirmarReserva('Corte + Barboterapia', '1h:00min')" class="px-4 py-1.5 rounded-lg border border-gold text-gold text-sm font-semibold hover-gold transition-colors">Reservar</button>
+                        </div>
+                        <div class="py-3 border-t border-zinc-800 flex justify-between items-center">
+                            <div>
+                                <h3 class="font-medium text-sm">Corte + Sobrancelha</h3>
+                                <p class="text-xs text-zinc-400 mt-1"><i class="far fa-clock mr-1"></i>40min</p>
+                            </div>
+                            <button onclick="confirmarReserva('Corte + Sobrancelha', '40min')" class="px-4 py-1.5 rounded-lg border border-gold text-gold text-sm font-semibold hover-gold transition-colors">Reservar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Cabelo -->
+            <div class="category-card bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
+                <button class="w-full px-5 py-4 flex items-center justify-between bg-zinc-900/50 hover:bg-zinc-800/50 transition-colors" onclick="toggleCategory(this)">
+                    <span class="font-semibold text-[15px]">Cabelo ✂️</span>
+                    <i class="fas fa-chevron-down text-zinc-500 icon-rotate text-sm"></i>
+                </button>
+                <div class="accordion-content bg-zinc-900">
+                    <div class="px-5 pb-2">
+                        <div class="py-3 border-t border-zinc-800 flex justify-between items-center">
+                            <div>
+                                <h3 class="font-medium text-sm">Corte</h3>
+                                <p class="text-xs text-zinc-400 mt-1"><i class="far fa-clock mr-1"></i>30min</p>
+                            </div>
+                            <button onclick="confirmarReserva('Corte', '30min')" class="px-4 py-1.5 rounded-lg border border-gold text-gold text-sm font-semibold hover-gold transition-colors">Reservar</button>
+                        </div>
+                        <div class="py-3 border-t border-zinc-800 flex justify-between items-center">
+                            <div>
+                                <h3 class="font-medium text-sm">Corte na Tesoura</h3>
+                                <p class="text-xs text-zinc-400 mt-1"><i class="far fa-clock mr-1"></i>1h:00min</p>
+                            </div>
+                            <button onclick="confirmarReserva('Corte na Tesoura', '1h:00min')" class="px-4 py-1.5 rounded-lg border border-gold text-gold text-sm font-semibold hover-gold transition-colors">Reservar</button>
+                        </div>
+                        <div class="py-3 border-t border-zinc-800 flex justify-between items-center">
+                            <div>
+                                <h3 class="font-medium text-sm">Corte Navalhado</h3>
+                                <p class="text-xs text-zinc-400 mt-1"><i class="far fa-clock mr-1"></i>40min</p>
+                            </div>
+                            <button onclick="confirmarReserva('Corte Navalhado', '40min')" class="px-4 py-1.5 rounded-lg border border-gold text-gold text-sm font-semibold hover-gold transition-colors">Reservar</button>
+                        </div>
+                        <div class="py-3 border-t border-zinc-800 flex justify-between items-center">
+                            <div>
+                                <h3 class="font-medium text-sm">Pezinho</h3>
+                                <p class="text-xs text-zinc-400 mt-1"><i class="far fa-clock mr-1"></i>20min</p>
+                            </div>
+                            <button onclick="confirmarReserva('Pezinho', '20min')" class="px-4 py-1.5 rounded-lg border border-gold text-gold text-sm font-semibold hover-gold transition-colors">Reservar</button>
+                        </div>
+                        <div class="py-3 border-t border-zinc-800 flex justify-between items-center">
+                            <div>
+                                <h3 class="font-medium text-sm">Hidratação</h3>
+                                <p class="text-xs text-zinc-400 mt-1"><i class="far fa-clock mr-1"></i>20min</p>
+                            </div>
+                            <button onclick="confirmarReserva('Hidratação', '20min')" class="px-4 py-1.5 rounded-lg border border-gold text-gold text-sm font-semibold hover-gold transition-colors">Reservar</button>
+                        </div>
+                        <div class="py-3 border-t border-zinc-800 flex justify-between items-center">
+                            <div>
+                                <h3 class="font-medium text-sm">Escova</h3>
+                                <p class="text-xs text-zinc-400 mt-1"><i class="far fa-clock mr-1"></i>30min</p>
+                            </div>
+                            <button onclick="confirmarReserva('Escova', '30min')" class="px-4 py-1.5 rounded-lg border border-gold text-gold text-sm font-semibold hover-gold transition-colors">Reservar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Barba -->
+            <div class="category-card bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
+                <button class="w-full px-5 py-4 flex items-center justify-between bg-zinc-900/50 hover:bg-zinc-800/50 transition-colors" onclick="toggleCategory(this)">
+                    <span class="font-semibold text-[15px]">Barba 🧔</span>
+                    <i class="fas fa-chevron-down text-zinc-500 icon-rotate text-sm"></i>
+                </button>
+                <div class="accordion-content bg-zinc-900">
+                    <div class="px-5 pb-2">
+                        <div class="py-3 border-t border-zinc-800 flex justify-between items-center">
+                            <div>
+                                <h3 class="font-medium text-sm">Barba</h3>
+                                <p class="text-xs text-zinc-400 mt-1"><i class="far fa-clock mr-1"></i>20min</p>
+                            </div>
+                            <button onclick="confirmarReserva('Barba', '20min')" class="px-4 py-1.5 rounded-lg border border-gold text-gold text-sm font-semibold hover-gold transition-colors">Reservar</button>
+                        </div>
+                        <div class="py-3 border-t border-zinc-800 flex justify-between items-center">
+                            <div>
+                                <h3 class="font-medium text-sm">Barboterapia</h3>
+                                <p class="text-xs text-zinc-400 mt-1"><i class="far fa-clock mr-1"></i>30min</p>
+                            </div>
+                            <button onclick="confirmarReserva('Barboterapia', '30min')" class="px-4 py-1.5 rounded-lg border border-gold text-gold text-sm font-semibold hover-gold transition-colors">Reservar</button>
+                        </div>
+                        <div class="py-3 border-t border-zinc-800 flex justify-between items-center">
+                            <div>
+                                <h3 class="font-medium text-sm">Pigmentação</h3>
+                                <p class="text-xs text-zinc-400 mt-1"><i class="far fa-clock mr-1"></i>30min</p>
+                            </div>
+                            <button onclick="confirmarReserva('Pigmentação', '30min')" class="px-4 py-1.5 rounded-lg border border-gold text-gold text-sm font-semibold hover-gold transition-colors">Reservar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. Química & Estilo -->
+            <div class="category-card bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
+                <button class="w-full px-5 py-4 flex items-center justify-between bg-zinc-900/50 hover:bg-zinc-800/50 transition-colors" onclick="toggleCategory(this)">
+                    <span class="font-semibold text-[15px]">Química & Estilo ⚡</span>
+                    <i class="fas fa-chevron-down text-zinc-500 icon-rotate text-sm"></i>
+                </button>
+                <div class="accordion-content bg-zinc-900">
+                    <div class="px-5 pb-2">
+                        <div class="py-3 border-t border-zinc-800 flex justify-between items-center">
+                            <div>
+                                <h3 class="font-medium text-sm">Luzes</h3>
+                                <p class="text-xs text-zinc-400 mt-1"><i class="far fa-clock mr-1"></i>1h:00min</p>
+                            </div>
+                            <button onclick="confirmarReserva('Luzes', '1h:00min')" class="px-4 py-1.5 rounded-lg border border-gold text-gold text-sm font-semibold hover-gold transition-colors">Reservar</button>
+                        </div>
+                        <div class="py-3 border-t border-zinc-800 flex justify-between items-center">
+                            <div>
+                                <h3 class="font-medium text-sm">Platinado</h3>
+                                <p class="text-xs text-zinc-400 mt-1"><i class="far fa-clock mr-1"></i>1h:00min</p>
+                            </div>
+                            <button onclick="confirmarReserva('Platinado', '1h:00min')" class="px-4 py-1.5 rounded-lg border border-gold text-gold text-sm font-semibold hover-gold transition-colors">Reservar</button>
+                        </div>
+                        <div class="py-3 border-t border-zinc-800 flex justify-between items-center">
+                            <div>
+                                <h3 class="font-medium text-sm">Selagem</h3>
+                                <p class="text-xs text-zinc-400 mt-1"><i class="far fa-clock mr-1"></i>1h:00min</p>
+                            </div>
+                            <button onclick="confirmarReserva('Selagem', '1h:00min')" class="px-4 py-1.5 rounded-lg border border-gold text-gold text-sm font-semibold hover-gold transition-colors">Reservar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. Estética & Acabamento -->
+            <div class="category-card bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
+                <button class="w-full px-5 py-4 flex items-center justify-between bg-zinc-900/50 hover:bg-zinc-800/50 transition-colors" onclick="toggleCategory(this)">
+                    <span class="font-semibold text-[15px]">Estética & Acabamento 🧖‍♂️</span>
+                    <i class="fas fa-chevron-down text-zinc-500 icon-rotate text-sm"></i>
+                </button>
+                <div class="accordion-content bg-zinc-900">
+                    <div class="px-5 pb-2">
+                        <div class="py-3 border-t border-zinc-800 flex justify-between items-center">
+                            <div>
+                                <h3 class="font-medium text-sm">Sobrancelha</h3>
+                                <p class="text-xs text-zinc-400 mt-1"><i class="far fa-clock mr-1"></i>10min</p>
+                            </div>
+                            <button onclick="confirmarReserva('Sobrancelha', '10min')" class="px-4 py-1.5 rounded-lg border border-gold text-gold text-sm font-semibold hover-gold transition-colors">Reservar</button>
+                        </div>
+                        <div class="py-3 border-t border-zinc-800 flex justify-between items-center">
+                            <div>
+                                <h3 class="font-medium text-sm">Depilação de nariz</h3>
+                                <p class="text-xs text-zinc-400 mt-1"><i class="far fa-clock mr-1"></i>10min</p>
+                            </div>
+                            <button onclick="confirmarReserva('Depilação de nariz', '10min')" class="px-4 py-1.5 rounded-lg border border-gold text-gold text-sm font-semibold hover-gold transition-colors">Reservar</button>
+                        </div>
+                        <div class="py-3 border-t border-zinc-800 flex justify-between items-center">
+                            <div>
+                                <h3 class="font-medium text-sm">Depilação de ouvido</h3>
+                                <p class="text-xs text-zinc-400 mt-1"><i class="far fa-clock mr-1"></i>10min</p>
+                            </div>
+                            <button onclick="confirmarReserva('Depilação de ouvido', '10min')" class="px-4 py-1.5 rounded-lg border border-gold text-gold text-sm font-semibold hover-gold transition-colors">Reservar</button>
+                        </div>
+                        <div class="py-3 border-t border-zinc-800 flex justify-between items-center">
+                            <div>
+                                <h3 class="font-medium text-sm">Esfoliação de pele</h3>
+                                <p class="text-xs text-zinc-400 mt-1"><i class="far fa-clock mr-1"></i>15min</p>
+                            </div>
+                            <button onclick="confirmarReserva('Esfoliação de pele', '15min')" class="px-4 py-1.5 rounded-lg border border-gold text-gold text-sm font-semibold hover-gold transition-colors">Reservar</button>
+                        </div>
+                        <div class="py-3 border-t border-zinc-800 flex justify-between items-center">
+                            <div>
+                                <h3 class="font-medium text-sm">Removedor de Cravos</h3>
+                                <p class="text-xs text-zinc-400 mt-1"><i class="far fa-clock mr-1"></i>15min</p>
+                            </div>
+                            <button onclick="confirmarReserva('Removedor de Cravos', '15min')" class="px-4 py-1.5 rounded-lg border border-gold text-gold text-sm font-semibold hover-gold transition-colors">Reservar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. Prótese Capilar -->
+            <div class="category-card bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
+                <button class="w-full px-5 py-4 flex items-center justify-between bg-zinc-900/50 hover:bg-zinc-800/50 transition-colors" onclick="toggleCategory(this)">
+                    <span class="font-semibold text-[15px]">Prótese Capilar 👑</span>
+                    <i class="fas fa-chevron-down text-zinc-500 icon-rotate text-sm"></i>
+                </button>
+                <div class="accordion-content bg-zinc-900">
+                    <div class="px-5 pb-2">
+                        <div class="py-3 border-t border-zinc-800 flex justify-between items-center">
+                            <div>
+                                <h3 class="font-medium text-sm">Manutenção de prótese</h3>
+                                <p class="text-xs text-zinc-400 mt-1"><i class="far fa-clock mr-1"></i>1h:30min</p>
+                            </div>
+                            <button onclick="confirmarReserva('Manutenção de prótese', '1h:30min')" class="px-4 py-1.5 rounded-lg border border-gold text-gold text-sm font-semibold hover-gold transition-colors">Reservar</button>
+                        </div>
+                        <div class="py-3 border-t border-zinc-800 flex justify-between items-center">
+                            <div>
+                                <h3 class="font-medium text-sm">Prótese capilar</h3>
+                                <p class="text-xs text-zinc-400 mt-1"><i class="far fa-clock mr-1"></i>4h:00min</p>
+                            </div>
+                            <button onclick="confirmarReserva('Prótese capilar', '4h:00min')" class="px-4 py-1.5 rounded-lg border border-gold text-gold text-sm font-semibold hover-gold transition-colors">Reservar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TELA 2.5: ESCOLHA DE DATA E HORÁRIO        -->
+    <!-- ========================================== -->
+    <div id="screen-datetime" class="max-w-md mx-auto hidden pt-4 pb-24 relative min-h-screen">
+        <!-- Cabeçalho Fixo -->
+        <div class="sticky top-0 bg-[#09090b]/95 backdrop-blur-md z-10 px-4 py-4 border-b border-zinc-800 flex items-center mb-6">
+            <button onclick="switchScreen('screen-booking')" class="w-10 h-10 rounded-full bg-zinc-900 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <div class="flex-1 text-center pr-10">
+                <h1 class="font-semibold text-lg">Data e Horário</h1>
+                <p class="text-xs text-gold" id="dt-service-name">Nome do Serviço</p>
+            </div>
+        </div>
+
+        <div class="px-5">
+            <!-- Seletor de Data -->
+            <h3 class="font-semibold text-zinc-100 text-base mb-3">Escolha a data</h3>
+            <div id="date-list" class="flex overflow-x-auto gap-3 pb-4 snap-x no-scrollbar">
+                <!-- Gerado via JS -->
+            </div>
+
+            <!-- Seletor de Horário -->
+            <h3 class="font-semibold text-zinc-100 text-base mb-3 mt-4">Horários disponíveis</h3>
+            <div id="time-list" class="grid grid-cols-3 gap-3 pb-6">
+                <!-- Gerado via JS -->
+            </div>
+        </div>
+
+        <!-- Botão Flutuante de Confirmação -->
+        <div class="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-[#09090b] via-[#09090b] to-transparent p-5 pt-10 z-20 max-w-md mx-auto">
+            <button id="btn-confirm-booking" onclick="finalizarAgendamento()" class="w-full bg-gold text-zinc-950 font-bold py-3.5 rounded-xl hover:bg-yellow-500 transition-colors shadow-lg opacity-50 cursor-not-allowed" disabled>
+                Confirmar Agendamento
+            </button>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TELA 3: SOBRE NÓS (FOTOS E VIBE)           -->
+    <!-- ========================================== -->
+    <div id="screen-about" class="max-w-md mx-auto hidden pt-4 pb-10">
+        <!-- Cabeçalho Fixo -->
+        <div class="sticky top-0 bg-[#09090b]/95 backdrop-blur-md z-10 px-4 py-4 border-b border-zinc-800 flex items-center mb-6">
+            <button onclick="switchScreen('screen-linktree')" class="w-10 h-10 rounded-full bg-zinc-900 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <div class="flex-1 text-center pr-10">
+                <h1 class="font-semibold text-lg">Sobre Nós</h1>
+                <p class="text-xs text-gold">A Experiência Pinheiro</p>
+            </div>
+        </div>
+
+        <div class="px-5">
+            <!-- Bloco de Texto -->
+            <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 mb-6 shadow-lg">
+                <h2 class="text-gold font-bold text-lg mb-2">Muito mais que um corte</h2>
+                <p class="text-zinc-300 text-sm leading-relaxed">
+                    Na Pinheiro Barbershop, nós acreditamos que o cuidado masculino deve ser um ritual. 
+                    Oferecemos um ambiente climatizado, som de primeira, aquela resenha boa e profissionais 
+                    altamente capacitados para entregar o melhor degradê e a barba mais alinhada da cidade.
+                    Sinta-se em casa!
+                </p>
+            </div>
+
+            <!-- Galeria de Fotos -->
+            <h3 class="font-semibold text-zinc-100 text-lg mb-4">Nosso Espaço & Trabalhos</h3>
+            <div class="grid grid-cols-2 gap-3">
+                <img src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=500&q=80" alt="Cadeira de Barbeiro" class="object-cover rounded-xl border border-zinc-800 hover:scale-105 hover:border-gold transition-all duration-300 h-36 w-full">
+                <img src="https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=500&q=80" alt="Corte Fade" class="object-cover rounded-xl border border-zinc-800 hover:scale-105 hover:border-gold transition-all duration-300 h-36 w-full">
+                <img src="https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=500&q=80" alt="Barboterapia" class="object-cover rounded-xl border border-zinc-800 hover:scale-105 hover:border-gold transition-all duration-300 h-36 w-full">
+                <img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=500&q=80" alt="Equipamentos" class="object-cover rounded-xl border border-zinc-800 hover:scale-105 hover:border-gold transition-all duration-300 h-36 w-full">
+                <img src="https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=500&q=80" alt="Corte Tesoura" class="object-cover rounded-xl border border-zinc-800 hover:scale-105 hover:border-gold transition-all duration-300 h-36 w-full">
+                <img src="https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=500&q=80" alt="Ambiente Barbearia" class="object-cover rounded-xl border border-zinc-800 hover:scale-105 hover:border-gold transition-all duration-300 h-36 w-full">
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODAL DE CONFIRMAÇÃO (Substitui o alert)   -->
+    <!-- ========================================== -->
+    <div id="modal-reserva" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex-col items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+        <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 w-full max-w-sm text-center transform scale-95 transition-transform duration-300 shadow-2xl" id="modal-content">
+            <div class="w-16 h-16 rounded-full bg-gold/10 text-gold mx-auto flex items-center justify-center mb-4">
+                <i class="fas fa-check text-2xl"></i>
+            </div>
+            <h2 class="text-xl font-bold mb-2">Agendamento Confirmado!</h2>
+            <p class="text-sm text-zinc-400 mb-4">Você escolheu <strong id="modal-service-name" class="text-zinc-100"></strong> (<span id="modal-service-time"></span>).</p>
+            
+            <div class="bg-zinc-800/50 rounded-lg p-3 mb-6 text-left border border-zinc-800 flex flex-col gap-2">
+                <p class="text-sm text-zinc-300 flex items-center"><i class="far fa-calendar-alt text-gold w-6 text-center"></i> <strong id="modal-date" class="text-zinc-100 ml-1"></strong></p>
+                <p class="text-sm text-zinc-300 flex items-center"><i class="far fa-clock text-gold w-6 text-center"></i> <strong id="modal-time" class="text-zinc-100 ml-1"></strong></p>
+            </div>
+            
+            <p class="text-xs text-zinc-500 mb-6">Te aguardamos na barbearia. Até breve!</p>
+            
+            <button onclick="fecharModal()" class="w-full bg-gold text-zinc-950 font-bold py-3 rounded-xl hover:bg-yellow-500 transition-colors">
+                Concluir
+            </button>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- JAVASCRIPT                                 -->
+    <!-- ========================================== -->
+    <script>
+        // Função para alternar entre as Telas
+        function switchScreen(targetScreenId) {
+            const screens = ['screen-linktree', 'screen-booking', 'screen-about', 'screen-datetime'];
+            
+            screens.forEach(id => {
+                const screen = document.getElementById(id);
+                if (id === targetScreenId) {
+                    screen.classList.remove('hidden');
+                    screen.classList.add('fade-in');
+                } else {
+                    screen.classList.add('hidden');
+                    screen.classList.remove('fade-in');
+                }
+            });
+            
+            window.scrollTo(0, 0); // Sobe para o topo
+        }
+
+        // Função para abrir/fechar as categorias da agenda (Acordeão)
+        function toggleCategory(buttonElement) {
+            const categoryCard = buttonElement.parentElement;
+            
+            // Opcional: fechar as outras abas quando abre uma (comentado para permitir várias abertas)
+            /*
+            document.querySelectorAll('.category-card').forEach(card => {
+                if (card !== categoryCard) card.classList.remove('active');
+            });
+            */
+           
+            categoryCard.classList.toggle('active');
+        }
+
+        // Funções para o Fluxo de Reserva e Modal
+        const modal = document.getElementById('modal-reserva');
+        const modalContent = document.getElementById('modal-content');
+        
+        let state = {
+            service: '',
+            duration: '',
+            date: '',
+            time: '',
+            dateText: ''
+        };
+
+        function confirmarReserva(nomeServico, tempoServico) {
+            // Salva o serviço escolhido
+            state.service = nomeServico;
+            state.duration = tempoServico;
+            document.getElementById('dt-service-name').innerText = nomeServico;
+            
+            // Reseta opções anteriores de data/hora
+            state.date = '';
+            state.time = '';
+            state.dateText = '';
+            atualizarBotaoConfirmar();
+            renderizarDatas();
+            renderizarHorarios();
+            
+            // Avança para a tela de escolha de data e hora
+            switchScreen('screen-datetime');
+        }
+
+        function renderizarDatas() {
+            const container = document.getElementById('date-list');
+            container.innerHTML = '';
+            const diasSemana = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+            const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+            
+            let html = '';
+            for(let i=0; i<7; i++) {
+                let d = new Date();
+                d.setDate(d.getDate() + i);
+                
+                let diaTexto = i === 0 ? 'Hoje' : diasSemana[d.getDay()];
+                let numero = d.getDate();
+                let mes = meses[d.getMonth()];
+                let dataValue = `${d.getFullYear()}-${(d.getMonth()+1).toString().padStart(2, '0')}-${numero.toString().padStart(2, '0')}`;
+                let textoExibicao = `${diaTexto}, ${numero} de ${mes}`;
+                
+                html += `
+                    <button onclick="selecionarData('${dataValue}', '${textoExibicao}')" id="btn-date-${dataValue}" class="date-btn snap-center shrink-0 flex flex-col items-center justify-center w-16 h-20 rounded-xl border border-zinc-800 bg-zinc-900 transition-colors">
+                        <span class="text-xs text-zinc-400 mb-1 pointer-events-none">${diaTexto}</span>
+                        <span class="text-xl font-bold text-zinc-100 pointer-events-none">${numero}</span>
+                        <span class="text-[10px] text-zinc-500 pointer-events-none">${mes}</span>
+                    </button>
+                `;
+            }
+            container.innerHTML = html;
+        }
+
+        function renderizarHorarios() {
+            const container = document.getElementById('time-list');
+            container.innerHTML = '';
+            
+            const horarios = [
+                '09:00', '09:30', '10:00', '10:30', '11:00', '11:30', 
+                '13:00', '13:30', '14:00', '14:30', '15:00', '15:30',
+                '16:00', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00'
+            ];
+            
+            let html = '';
+            horarios.forEach(h => {
+                html += `
+                    <button onclick="selecionarHorario('${h}')" id="btn-time-${h.replace(':','')}" class="time-btn py-2.5 rounded-lg border border-zinc-800 bg-zinc-900 text-sm font-medium text-zinc-300 transition-colors">
+                        ${h}
+                    </button>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function selecionarData(dataValue, textoExibicao) {
+            state.date = dataValue;
+            state.dateText = textoExibicao;
+            
+            // Remove destaque de todos
+            document.querySelectorAll('.date-btn').forEach(btn => {
+                btn.classList.remove('bg-gold', 'border-gold');
+                btn.classList.add('bg-zinc-900', 'border-zinc-800');
+                
+                const spans = btn.querySelectorAll('span');
+                spans[0].classList.replace('text-zinc-950', 'text-zinc-400');
+                spans[1].classList.replace('text-zinc-950', 'text-zinc-100');
+                spans[2].classList.replace('text-zinc-800', 'text-zinc-500');
+            });
+            
+            // Adiciona destaque no clicado
+            let activeBtn = document.getElementById(`btn-date-${dataValue}`);
+            activeBtn.classList.remove('bg-zinc-900', 'border-zinc-800');
+            activeBtn.classList.add('bg-gold', 'border-gold');
+            
+            const activeSpans = activeBtn.querySelectorAll('span');
+            activeSpans[0].classList.replace('text-zinc-400', 'text-zinc-950');
+            activeSpans[1].classList.replace('text-zinc-100', 'text-zinc-950');
+            activeSpans[2].classList.replace('text-zinc-500', 'text-zinc-800');
+            
+            atualizarBotaoConfirmar();
+        }
+
+        function selecionarHorario(horario) {
+            state.time = horario;
+            
+            // Remove destaque de todos
+            document.querySelectorAll('.time-btn').forEach(btn => {
+                btn.classList.remove('bg-gold', 'text-zinc-950', 'border-gold');
+                btn.classList.add('bg-zinc-900', 'border-zinc-800', 'text-zinc-300');
+            });
+            
+            // Adiciona destaque no clicado
+            let activeBtn = document.getElementById(`btn-time-${horario.replace(':','')}`);
+            activeBtn.classList.remove('bg-zinc-900', 'border-zinc-800', 'text-zinc-300');
+            activeBtn.classList.add('bg-gold', 'text-zinc-950', 'border-gold');
+            
+            atualizarBotaoConfirmar();
+        }
+
+        function atualizarBotaoConfirmar() {
+            const btn = document.getElementById('btn-confirm-booking');
+            if (state.date && state.time) {
+                btn.disabled = false;
+                btn.classList.remove('opacity-50', 'cursor-not-allowed');
+            } else {
+                btn.disabled = true;
+                btn.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+        }
+
+        function finalizarAgendamento() {
+            // Atualiza os textos no modal final
+            document.getElementById('modal-service-name').innerText = state.service;
+            document.getElementById('modal-service-time').innerText = state.duration;
+            document.getElementById('modal-date').innerText = state.dateText;
+            document.getElementById('modal-time').innerText = state.time;
+            
+            // Mostra o modal com animação
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modalContent.classList.remove('scale-95');
+                modalContent.classList.add('scale-100');
+            }, 10);
+        }
+
+        function fecharModal() {
+            // Animação de fechamento
+            modal.classList.add('opacity-0');
+            modalContent.classList.remove('scale-100');
+            modalContent.classList.add('scale-95');
+            
+            // Esconde após a animação
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                
+                // Volta para a tela inicial 
+                switchScreen('screen-linktree');
+            }, 300);
+        }
+    </script>
+</body>
+</html>
