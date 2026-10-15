@@ -98,7 +98,7 @@
         <!-- Botões de Ação -->
         <div class="flex flex-col gap-4">
             
-            <!-- 1. Agendamento Online (Movido para o topo) -->
+            <!-- 1. Agendamento Online -->
             <button onclick="switchScreen('screen-booking')" class="flex items-center bg-zinc-900 p-4 rounded-2xl border border-gold hover:bg-gold hover:text-zinc-950 transition-all w-full group text-left shadow-[0_4px_20px_rgba(212,175,55,0.15)] relative overflow-hidden">
                 <div class="w-12 h-12 rounded-full bg-gold/20 flex items-center justify-center text-gold group-hover:text-zinc-950 group-hover:bg-zinc-950/20 transition-colors shrink-0">
                     <i class="fas fa-calendar-check text-xl"></i>
@@ -109,6 +109,17 @@
                 </div>
                 <div class="absolute right-4 text-gold group-hover:text-zinc-950">
                     <i class="fas fa-chevron-right"></i>
+                </div>
+            </button>
+
+            <!-- NOVO BOTÃO: Meus Agendamentos -->
+            <button class="flex items-center bg-zinc-900 p-4 rounded-2xl border border-zinc-800 hover:border-gold transition-colors w-full group text-left relative overflow-hidden">
+                <div class="w-12 h-12 rounded-full bg-zinc-800 flex items-center justify-center text-zinc-300 group-hover:text-gold transition-colors shrink-0">
+                    <i class="fas fa-list-ul text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <h2 class="font-semibold text-zinc-100">Meus agendamentos</h2>
+                    <p class="text-xs text-zinc-400 mt-1">Veja ou cancele seus horários</p>
                 </div>
             </button>
 
